@@ -12,7 +12,7 @@ theme_settings:
 
   # Header and footer text
   header_text: >
-     <h1>Welcome to my blog</h1>
+     <h1>Welcome to my blog!</h1>
      <p>I'm publishing posts about Web Development, Cloud, Continous delivery, and other Web-related stuff.</p>
      <p>Write me on <a href="mailto:bastien.libersa@gmail.com">bastien.libersa@gmail.com</a> for anything.</p>
   header_text_feature_image:
