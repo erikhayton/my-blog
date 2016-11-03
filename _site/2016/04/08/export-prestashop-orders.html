@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+	<meta charset="utf-8">
+	<title>Export your PrestaShop orders without module | Bastien's blog</title>
+	<meta name="description" content="With a default install of PrestaShop (any version), you cannot export all your orders and clients data to a file. You can either export your orders (but do n...">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!--Favicon-->
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+	<!-- Canonical -->
+	<link rel="canonical" href="http://blog.bastienlibersa.fr/2016/04/08/export-prestashop-orders.html">
+
+	<!-- RSS -->
+	<link rel="alternate" type="application/atom+xml" title="Bastien's blog" href="http://blog.bastienlibersa.fr/feed.xml" />
+
+	<!-- Font Awesome -->
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<!-- Google Fonts -->
+	
+	<link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,700italic,400italic" rel="stylesheet" type="text/css">
+	
+
+	<!-- KaTeX -->
+	
+
+	<!-- Google Analytics -->
+	
+	<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-20546327-7', 'auto');
+	ga('send', 'pageview');
+	</script>
+	
+</head>
+
+  <body>
+    <header class="site-header">
+	<div class="branding">
+		
+		<a href="/">
+			<img class="avatar" src="https://secure.gravatar.com/avatar/38d022408a7f3aa1e90e078a8f809d11?s=100" alt=""/>
+		</a>
+		
+		<h1 class="site-title">
+			<a href="/">Bastien's blog</a>
+		</h1>
+	</div>
+	<nav class="site-nav">
+		<ul>
+			<li>
+				<a class="page-link" href="https://bastienlibersa.fr" target="_blank">
+					Me
+				</a>
+			</li>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<!-- Social icons from Font Awesome, if enabled -->
+			
+
+
+<li>
+	<a href="mailto:bastien.libersa@gmail.com" title="Email">
+		<i class="fa fa-fw fa-envelope"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+	<a href="https://github.com/BastienL" title="Follow on GitHub" target="_blank">
+		<i class="fa fa-fw fa-github"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+<li>
+	<a href="https://fr.linkedin.com/in/bastien-libersa-9b88a225" title="Follow on LinkedIn" target="_blank">
+		<i class="fa fa-fw fa-linkedin"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+
+
+<li>
+	<a href="http://stackoverflow.com/users/877323/bastien-libersa" title="Follow on Stack Exchange" target="_blank">
+		<i class="fa fa-fw fa-stack-exchange"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+<li>
+	<a href="https://twitter.com/blibersa" title="Follow on Twitter" target="_blank">
+		<i class="fa fa-fw fa-twitter"></i>
+	</a>
+</li>
+
+
+
+
+
+
+		</ul>
+	</nav>
+</header>
+
+    <div class="content">
+      <article >
+  <header style="background-image: url('/')">
+    <h1 class="title">Export your PrestaShop orders without module</h1>
+    <p class="meta">
+    April 8, 2016
+    
+    </p>
+  </header>
+  <section class="post-content"><p>With a default install of PrestaShop (any version), you cannot export all your orders and clients data to a file. You can either export your orders (but do not have any reference about the client) or your clients (but can’t see his orders). That sounds a bit crazy but this is the choice they made.</p>
+
+<p>But what if you want to send an email to your last 100 clients?</p>
+
+<p>The only solutions are (were ^^):</p>
+<ul>
+	<li>Install a paid module (such as <a href="http://addons.prestashop.com/fr/17596-orders-csv-excel-export.html" target="_blank">http://addons.prestashop.com/fr/17596-orders-csv-excel-export.html</a>)</li>
+	<li>Develop your own module</li>
+	<li>Make it manually</li>
+</ul>
+
+<p>If you do not want to pay or don’t have time or skills to create your own module, then there is another solution: use a plain-old SQL query :)</p>
+
+<p>Just open your MySQL client (such as PHPMyAdmin, MySQL Workbench or whatever) and open your PrestaShop database.</p>
+
+<p>Then execute the following query:</p>
+
+<p>​<code>​</code><code>SELECT o.id_order, o.id_customer, o.date_add, c.firstname, c.lastname, c.email FROM ps_orders o LEFT JOIN ps_customer c ON o.id_customer = c.id_customer WHERE o.current_state = 5 ORDER BY o.date_add DESC</code></p>
+
+<p>I know this is a simple one, but I saw so much clients being stuck to export their clients list ​that I thought it was a good idea to share it.</p>
+
+<p>You can now easily export the result!</p>
+
+<p>PS: This query only returns the delivered orders. If you want to get all orders or use another filter, you can do so using the table on this page: <a href="http://doc.prestashop.com/display/PS16/Statuses" target="_blank">http://doc.prestashop.com/display/PS16/Statuses</a>.</p>
+</section>
+</article>
+
+<!-- Post navigation -->
+
+
+<!-- Disqus -->
+
+
+    </div>
+    
+
+
+<footer class="site-footer">
+	<p class="text"></p>
+</footer>
+
+
+  </body>
+</html>

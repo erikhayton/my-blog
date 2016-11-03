@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title></title>
+    <atom:link href="http://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
+    <link>http://blog.bastienlibersa.fr/</link>
+    <description></description>
+    <pubDate>Thu, 13 Oct 2016 13:44:18 +0200</pubDate>
+    
+      <item>
+        <title>Zero-downtime deployments with Docker</title>
+        <link>http://blog.bastienlibersa.fr/2016/10/13/zero-downtime-deployments-with-docker.html</link>
+        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/10/13/zero-downtime-deployments-with-docker.html</guid>
+        <description>&lt;p&gt;Docker became in a couple of years the DevOps’ new best friend. The goal of this article is not to present the multiple benefits of Docker, but rather to talk about an use case where Docker can really be useful: Zero-downtime deployments. In other words, the ability to update your online dockerized service (an app, a website, etc.) without any downtime.&lt;/p&gt;
+
+&lt;p&gt;To do so, we need at least two containers running our service (we’ll call them &lt;i&gt;app&lt;/i&gt;) and one container running our load balancer (we’ll call him &lt;i&gt;lb&lt;/i&gt;). The &lt;a href=&quot;https://github.com/docker/dockercloud-haproxy&quot;&gt;dockercloud/haproxy&lt;/a&gt; image is a great candidate for the load balancing part, as it embeds HAProxy and some useful commands to scale up and down our app containers. For the app, we’ll simply use the &lt;a href=&quot;https://github.com/docker/dockercloud-hello-world&quot;&gt;dockercloud/hello-world&lt;/a&gt; image.&lt;/p&gt;
+
+&lt;p&gt;Basically, our &lt;a href=&quot;https://github.com/BastienL/zero-downtime-deployment-with-docker/blob/master/docker-compose.yml&quot;&gt;docker-compose.yml&lt;/a&gt; file will be:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;l-Scalar-Plain&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;2&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;dockercloud/hello-world&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;lb&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;dockercloud/haproxy&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;links&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;app&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;/var/run/docker.sock:/var/run/docker.sock&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;80:80&lt;/span&gt;
+      &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;1936:1936&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;NB: we exposed port 1936 to have access to the HAProxy stats. You should remove it once in production.&lt;/p&gt;
+
+&lt;p&gt;Run the service (&lt;i&gt;docker-compose up -d&lt;/i&gt;) and browse to &lt;i&gt;http://127.0.0.1&lt;/i&gt;. Your service should be working!&lt;/p&gt;
+
+&lt;p&gt;Now, we are going to make use of a really useful command given by the dockercloud/haproxy image: &lt;b&gt;docker-compose scale&lt;/b&gt;. This command creates new containers and automatically connects them to HAProxy. Great!&lt;/p&gt;
+
+&lt;p&gt;To try it, just type &lt;i&gt;docker-compose scale app=2&lt;/i&gt; and see the magic happens! Now the load balancer must balance your visitors to one of the two running “app” containers (go to &lt;i&gt;http://127.0.0.1:1936&lt;/i&gt; - user: stats, password: stats - if you want to make sure).&lt;/p&gt;
+
+&lt;p&gt;So basically, we could imagine that to update our app, we could simply scale up our app, as the new containers based on the new image will be created and connected to HAProxy and then scale it down to remove the old ones. Unfortunately, &lt;i&gt;docker-compose scale&lt;/i&gt; does the opposite: it will remove the new ones and keep the old ones. Bummer!&lt;/p&gt;
+
+&lt;p&gt;To fix this, I created a simple &lt;a href=&quot;https://github.com/BastienL/zero-downtime-deployment-with-docker/blob/master/deploy.sh&quot;&gt;bash script&lt;/a&gt; that:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Builds the new app image&lt;/li&gt;
+&lt;li&gt;Scales up your app with new containers based on the new image&lt;/li&gt;
+&lt;li&gt;Sleeps (waiting for your app containers to be ready to accept connections)&lt;/li&gt;
+&lt;li&gt;Removes all the &quot;old&quot; app containers&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;To use it, just update the constants at the beginning of the file and run it. Now you don’t have any downtime anymore during your deployments. Enjoy :)&lt;/p&gt;
+
+&lt;p&gt;If you want to give it a try, you can get the sources on my &lt;a href=&quot;https://github.com/BastienL/zero-downtime-deployment-with-docker&quot;&gt;repository&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;PS: I’m aware some parts could be improved (using a health-check instead of a sleep for example), but I think this script is a good start. Let me know if you updated or improved it!&lt;/small&gt;&lt;/p&gt;
+</description>
+        <pubDate>Thu, 13 Oct 2016 00:00:00 +0200</pubDate>
+      </item>
+    
+      <item>
+        <title>Resources to find a remote job</title>
+        <link>http://blog.bastienlibersa.fr/2016/08/30/find-remote-job.html</link>
+        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/08/30/find-remote-job.html</guid>
+        <description>&lt;p&gt;A few months ago, I decided to quit my job at Citizen Republic to get a new position. I had many reasons to change, but one of the most important was I really wanted to know what it was like to work remotely. I don’t mean working from home time-to-time for convenience, but really work for a company where offices and face-to-face meetings do not exist.&lt;/p&gt;
+
+&lt;p&gt;I think the folks at &lt;a href=&quot;https://37signals.com/remote&quot; target=&quot;_blank&quot;&gt;37 Signals&lt;/a&gt; really convinced me ;)&lt;/p&gt;
+
+&lt;p&gt;The fact is, in France, remote working is not so frequent, and traditional job boards French developers usually use (RemixJobs and AzertyJobs ahead) do not offer a “remote” criteria. So I just wanted to share this list of job boards referencing open remote positions or at least a “remote” criteria. They have helped me a lot during my search:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://weworkremotely.com&quot; target=&quot;_blank&quot;&gt;We Work Remotely&lt;/a&gt;, supported by Jason Fried and his crew&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://jobs.remotive.io&quot; target=&quot;_blank&quot;&gt;Remotive&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://remoteok.io/remote-jobs&quot; target=&quot;_blank&quot;&gt;Remote|ok&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://angel.co&quot; target=&quot;_blank&quot;&gt;Angel List&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.jobsintech.io&quot; target=&quot;_blank&quot;&gt;Jobs In Tech&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.workingnomads.co/jobs&quot; target=&quot;_blank&quot;&gt;Working Nomads&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/jobs&quot; target=&quot;_blank&quot;&gt;StackOverflow | Jobs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You should also definitely have a look at &lt;a href=&quot;https://github.com/lukasz-madon/awesome-remote-job&quot; target=&quot;_blank&quot;&gt;Awesome Remote Job&lt;/a&gt;, a GitHub repo curating a lot of resources about remote jobs.&lt;/p&gt;
+
+&lt;p&gt;Needless to say, my preference goes to We Work Remotely as this is where I finally found my current (remote, of course) position at &lt;a href=&quot;https://emailhunter.co&quot; target=&quot;_blank&quot;&gt;EmailHunter.co&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;A BIG thank you to the guys behind each of this websites, you really made my life better!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 30 Aug 2016 00:00:00 +0200</pubDate>
+      </item>
+    
+      <item>
+        <title>Export your PrestaShop orders without module</title>
+        <link>http://blog.bastienlibersa.fr/2016/04/08/export-prestashop-orders.html</link>
+        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/04/08/export-prestashop-orders.html</guid>
+        <description>&lt;p&gt;With a default install of PrestaShop (any version), you cannot export all your orders and clients data to a file. You can either export your orders (but do not have any reference about the client) or your clients (but can’t see his orders). That sounds a bit crazy but this is the choice they made.&lt;/p&gt;
+
+&lt;p&gt;But what if you want to send an email to your last 100 clients?&lt;/p&gt;
+
+&lt;p&gt;The only solutions are (were ^^):&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Install a paid module (such as &lt;a href=&quot;http://addons.prestashop.com/fr/17596-orders-csv-excel-export.html&quot; target=&quot;_blank&quot;&gt;http://addons.prestashop.com/fr/17596-orders-csv-excel-export.html&lt;/a&gt;)&lt;/li&gt;
+	&lt;li&gt;Develop your own module&lt;/li&gt;
+	&lt;li&gt;Make it manually&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you do not want to pay or don’t have time or skills to create your own module, then there is another solution: use a plain-old SQL query :)&lt;/p&gt;
+
+&lt;p&gt;Just open your MySQL client (such as PHPMyAdmin, MySQL Workbench or whatever) and open your PrestaShop database.&lt;/p&gt;
+
+&lt;p&gt;Then execute the following query:&lt;/p&gt;
+
+&lt;p&gt;​&lt;code&gt;​&lt;/code&gt;&lt;code&gt;SELECT o.id_order, o.id_customer, o.date_add, c.firstname, c.lastname, c.email FROM ps_orders o LEFT JOIN ps_customer c ON o.id_customer = c.id_customer WHERE o.current_state = 5 ORDER BY o.date_add DESC&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;I know this is a simple one, but I saw so much clients being stuck to export their clients list ​that I thought it was a good idea to share it.&lt;/p&gt;
+
+&lt;p&gt;You can now easily export the result!&lt;/p&gt;
+
+&lt;p&gt;PS: This query only returns the delivered orders. If you want to get all orders or use another filter, you can do so using the table on this page: &lt;a href=&quot;http://doc.prestashop.com/display/PS16/Statuses&quot; target=&quot;_blank&quot;&gt;http://doc.prestashop.com/display/PS16/Statuses&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 08 Apr 2016 00:00:00 +0200</pubDate>
+      </item>
+    
+      <item>
+        <title>Improve your email deliverability</title>
+        <link>http://blog.bastienlibersa.fr/2016/03/04/improve-email-deliverability.html</link>
+        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/03/04/improve-email-deliverability.html</guid>
+        <description>&lt;p&gt;These are the slides of a talk I gave for the march 2016 Grenoble Human Talks.&lt;/p&gt;
+
+&lt;p&gt;The aim of this talk was to present a few good practices and hints to improve the deliverability of the emails you send.&lt;/p&gt;
+
+&lt;p&gt;Most of them are just common sense but used all together they can make you safe about your sender reputation!&lt;/p&gt;
+
+&lt;div class=&quot;embed-container&quot;&gt;
+	&lt;iframe src=&quot;//www.slideshare.net/slideshow/embed_code/key/32hnY7RXJdlZ2L&quot; width=&quot;595&quot; height=&quot;485&quot; frameborder=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; style=&quot;border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;&quot; allowfullscreen=&quot;&quot;&gt; &lt;/iframe&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Fri, 04 Mar 2016 00:00:00 +0100</pubDate>
+      </item>
+    
+      <item>
+        <title>Introduction to AWS</title>
+        <link>http://blog.bastienlibersa.fr/2016/03/03/introduction-to-aws.html</link>
+        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/03/03/introduction-to-aws.html</guid>
+        <description>&lt;p&gt;These are the slides of a talk I gave for the october 2015 Grenoble Human Talks.&lt;/p&gt;
+
+&lt;p&gt;The aim of this talk was to answer to very simple questions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;what is Amazon Web Services ?&lt;/li&gt;
+  &lt;li&gt;what can I do with it?&lt;/li&gt;
+  &lt;li&gt;how can I use it?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The slides were applied to a real-life business case: the hosting of &lt;a href=&quot;https://www.monaviscompte.fr&quot; target=&quot;_blank&quot;&gt;monaviscompte.fr&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Sorry, but they are in French!&lt;/p&gt;
+
+&lt;div class=&quot;embed-container&quot;&gt;
+	&lt;iframe src=&quot;https://fr.slideshare.net/slideshow/embed_code/key/aLk9cWTswBDjZL&quot; width=&quot;595&quot; height=&quot;485&quot; frameborder=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; style=&quot;border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;&quot; allowfullscreen=&quot;&quot;&gt; &lt;/iframe&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Thu, 03 Mar 2016 00:00:00 +0100</pubDate>
+      </item>
+    
+  </channel>
+</rss>
