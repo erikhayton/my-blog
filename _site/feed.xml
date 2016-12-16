@@ -5,7 +5,25 @@
     <atom:link href="http://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
     <link>http://blog.bastienlibersa.fr/</link>
     <description></description>
-    <pubDate>Thu, 03 Nov 2016 13:28:03 +0100</pubDate>
+    <pubDate>Fri, 16 Dec 2016 13:40:59 +0100</pubDate>
+    
+      <item>
+        <title>Bug Bounty Program</title>
+        <link>http://blog.bastienlibersa.fr/2016/12/16/bug-bounty-program.html</link>
+        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/12/16/bug-bounty-program.html</guid>
+        <description>&lt;p&gt;These are the slides of a talk I gave for the december 2016 Grenoble Human Talks.&lt;/p&gt;
+
+&lt;p&gt;The aim of this talk was to present the ideas behind bug bounty programs, and to
+present the results we get with the program we set at Hunter.io.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Disclaimer:&lt;/em&gt; We were really satisfied with the results!&lt;/p&gt;
+
+&lt;div class=&quot;embed-container&quot;&gt;
+	&lt;iframe src=&quot;https://fr.slideshare.net/slideshow/embed_code/key/Dyt7N2K9dGFyFH&quot; width=&quot;595&quot; height=&quot;485&quot; frameborder=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; style=&quot;border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;&quot; allowfullscreen=&quot;&quot;&gt; &lt;/iframe&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Fri, 16 Dec 2016 00:00:00 +0100</pubDate>
+      </item>
     
       <item>
         <title>Zero-downtime deployments with Docker</title>
