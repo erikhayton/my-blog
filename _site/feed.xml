@@ -5,7 +5,122 @@
     <atom:link href="http://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
     <link>http://blog.bastienlibersa.fr/</link>
     <description></description>
-    <pubDate>Fri, 16 Dec 2016 13:40:59 +0100</pubDate>
+    <pubDate>Thu, 13 Apr 2017 13:41:31 +0200</pubDate>
+    
+      <item>
+        <title>Manage your Kubernetes deployments with the Kube API</title>
+        <link>http://blog.bastienlibersa.fr/2017/04/03/manage-kubernetes-with-api.html</link>
+        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2017/04/03/manage-kubernetes-with-api.html</guid>
+        <description>&lt;p&gt;At &lt;a href=&quot;https://hunter.io&quot;&gt;Hunter&lt;/a&gt;, we recently decided to move parts of our containers management from Cloud66 to Kubernetes. We wanted to have more control over the resources requested by our apps, and also speed up the deployment process which was really slow at C66.&lt;/p&gt;
+
+&lt;p&gt;Kubernetes comes with a great CLI called &lt;code&gt;kubectl&lt;/code&gt; to manage and run commands into your cluster. Thing is, it’s not really convenient to install and use it inside build machines such as a CircleCI machine. &lt;a href=&quot;https://github.com/kubernetes/contrib/tree/master/continuousdelivery&quot;&gt;Some scripts&lt;/a&gt; have been created by the community to help you but my own experience shows that’s not a really smooth solution. And things get worse if you want to make a guy such as &lt;a href=&quot;https://hubot.github.com/&quot;&gt;Hubot&lt;/a&gt; (Node.js-based bot built by GitHub) manage your deployments.&lt;/p&gt;
+
+&lt;p&gt;Under the hood, &lt;code&gt;kubectl&lt;/code&gt; uses the Kubernetes API so why not use it directly through plain HTTP calls? This is what I’ll be presenting in this article, to accomplish two tasks: update your apps to a newer version and scale your apps.&lt;/p&gt;
+
+&lt;h3&gt;1. Authentication&lt;/h3&gt;
+
+&lt;p&gt;The first step there is to create a service account (let’s call it &lt;i&gt;hubot&lt;/i&gt; for the rest of the article) that we’ll use to talk to the Kubernetes API:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ kubectl create serviceaccount hubot
+serviceaccount &quot;hubot&quot; created​
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;
+$ kubectl get serviceaccounts hubot -o yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  ...
+secrets:
+- name: &lt;b&gt;hubot-token-abcd&lt;/b&gt;
+&lt;/pre&gt;
+
+&lt;pre&gt;
+$ kubectl get secret hubot-token-abcd -o yaml
+apiVersion: v1
+data:
+  ca.crt: &lt;b&gt;base64-encoded certificate&lt;/b&gt;
+  token: &lt;b&gt;base64-encoded bearer token&lt;/b&gt;
+  kind: Secret
+metadata:
+...
+&lt;/pre&gt;
+
+&lt;p&gt;With the certificate and the token, we’ve got everything we need to talk to the Kubernetes API so let’s continue!&lt;/p&gt;
+
+&lt;h3&gt;2. Your first request&lt;/h3&gt;
+&lt;p&gt;To make sure we’re fine, let’s try to make our first request to the Kubernetes API: listing all the nodes of your cluster.&lt;/p&gt;
+
+&lt;p&gt;Un-decode the certificate and the bearer token, and save them in two separate files on your  filesystem (called &lt;code&gt;ca.crt&lt;/code&gt; and &lt;code&gt;token&lt;/code&gt; in my examples). Then, execute:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;curl --cacert ca.crt -H &quot;Authorization: Bearer $(cat token)&quot; \
+https://{YOUR_KUBE_MASTER_IP}/api/v1/nodes
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If everything’s ok, you should receive a response from the Kubernetes API listing all the nodes from your cluster:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;kind&quot;: &quot;NodeList&quot;,
+  &quot;apiVersion&quot;: &quot;v1&quot;,
+  &quot;items&quot;: [
+    ...
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The hardest part if behind us!&lt;/p&gt;
+
+&lt;h3&gt;3. Updating your deployments to a newer version&lt;/h3&gt;
+
+&lt;p&gt;Now, we would like to be able to update our deployments (see &lt;a href=&quot;https://kubernetes.io/docs/concepts/workloads/controllers/deployment/&quot;&gt;Deployments&lt;/a&gt; in case you’re not familiar with this concept). Basically a deployment is just a set of resources to be managed by Kubernetes.&lt;/p&gt;
+
+&lt;p&gt;Let’s pretend we have a deployment called &lt;code&gt;my-app&lt;/code&gt;, containing a simple container based on image &lt;code&gt;docker.io/bastien/my-container:1&lt;/code&gt;. You updated &lt;code&gt;my-container&lt;/code&gt;, and would like the new version to get deployed to all the pods managed through &lt;code&gt;my-app&lt;/code&gt;. Easy!&lt;/p&gt;
+
+&lt;p&gt;With &lt;code&gt;kubectl&lt;/code&gt;, you would normally do:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;kubectl set image deployment/my-app my-container=my-container:2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With cURL, this is (almost) as simple:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-`&quot;&gt;curl --cacert ca.crt -H &quot;Authorization: Bearer $(cat token)&quot; \
+-H &quot;Content-Type: application/json-patch+json&quot; -X PATCH \
+-d '[{ \
+    &quot;op&quot;:&quot;replace&quot;, \
+    &quot;path&quot;:&quot;/spec/template/spec/containers/0/image&quot;, \
+    &quot;value&quot;: &quot;docker.io/bastien/my-container:2&quot; \
+  }]' \
+https://{YOUR_KUBE_MASTER_IP}/apis/extensions/v1beta1/namespaces/default/deployments/my-app
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Basically, we’re sending a PATCH request to our deployment endpoint, with a BODY containing the patch definition (a &lt;code&gt;replace&lt;/code&gt; operation on the provided &lt;code&gt;path&lt;/code&gt; with the new &lt;code&gt;my-container:2&lt;/code&gt; value), with the appropriate Content-Type. That’s it!&lt;/p&gt;
+
+&lt;h3&gt;4. Scale your deployments&lt;/h3&gt;
+
+&lt;p&gt;Imagine you’re under an heavy load and want to scale up your deployment with more replicas? Then you just need one HTTP call, that will do the same thing as:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;kubectl scale deployment nginx-deployment --replicas 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With cURL, this is what you have to do:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl --cacert ca.crt -H &quot;Authorization: Bearer $(cat token)&quot; \
+-H &quot;Content-Type: application/json-patch+json&quot; -X PATCH \
+-d '[{ \
+    &quot;op&quot;:&quot;replace&quot;, \
+    &quot;path&quot;:&quot;/spec/replicas&quot;, \
+    &quot;value&quot;: &quot;2&quot; \
+  }]' \
+https://{YOUR_KUBE_MASTER_IP}/apis/extensions/v1beta1/namespaces/default/deployments/my-app
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I think you got it, we just patched our deployment with a new definition for the &lt;code&gt;spec/replicas&lt;/code&gt; path, with a new value of 2.&lt;/p&gt;
+
+&lt;h3&gt;5. Conclusion&lt;/h3&gt;
+
+&lt;p&gt;These two examples show how to communicate with the Kubernetes API to manage your deployments, but of course you can manage any Kubernetes resource through the API!&lt;/p&gt;
+
+&lt;p&gt;At Hunter, we manage our deployments from CircleCI and Hubot, with plain API calls, without needing to install &lt;code&gt;kubectl&lt;/code&gt; ✌️&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;mailto:bastien.libersa@gmail.com&quot;&gt;Let me know&lt;/a&gt; if you have any question or feedback!&lt;/p&gt;
+</description>
+        <pubDate>Mon, 03 Apr 2017 00:00:00 +0200</pubDate>
+      </item>
     
       <item>
         <title>Bug Bounty Program</title>

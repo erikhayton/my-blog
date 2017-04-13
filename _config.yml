@@ -17,7 +17,7 @@ theme_settings:
      <p>Write me on <a href="mailto:bastien.libersa@gmail.com">bastien.libersa@gmail.com</a> for anything.</p>
   header_text_feature_image:
   footer_text: >
-   Powered by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> with <a href="https://rohanchandra.github.io/project/type/" target="_blank">Type Theme</a>
+    Powered by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> with <a href="https://rohanchandra.github.io/project/type/" target="_blank">Type Theme</a>
 
   # Icons
   rss: false
