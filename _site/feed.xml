@@ -5,7 +5,67 @@
     <atom:link href="http://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
     <link>http://blog.bastienlibersa.fr/</link>
     <description></description>
-    <pubDate>Thu, 13 Apr 2017 13:41:31 +0200</pubDate>
+    <pubDate>Fri, 15 Sep 2017 19:33:58 +0200</pubDate>
+    
+      <item>
+        <title>One year of remote working</title>
+        <link>http://blog.bastienlibersa.fr/2017/09/15/one-year-of-remote-working.html</link>
+        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2017/09/15/one-year-of-remote-working.html</guid>
+        <description>&lt;p&gt;Over a year ago (I can’t believe how fast time flies!), I began working 100% remotely for &lt;a href=&quot;https://hunter.io&quot; target=&quot;_blank&quot;&gt;hunter.io&lt;/a&gt;. This has been my best professionnal decision ever. In this post, I wanted to share a couple of things working remotely has taught me.&lt;/p&gt;
+
+&lt;h3&gt;Motivation&lt;/h3&gt;
+
+&lt;p&gt;Most people don’t understand how I can keep getting motivated working from home where there’s a TV, a fridge, a garden, and my extraordinary partner (who happens to be a freelancer working from home, too). Well, the recipe is simple: as long as you love what you do and you have objectives (or to-dos, deadlines, whatever), then working from anywhere has no importance. On the contrary, working from a place you feel like home makes you more productive, more energic, more focused.&lt;/p&gt;
+
+&lt;p&gt;That reminds of the famous quote:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Choose a job you love, and you will never have to work a day in your life.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;That’s a definitely a cliché, but a true one.&lt;/p&gt;
+
+&lt;p&gt;Not convinced?&lt;/p&gt;
+
+&lt;h3&gt;Social Isolation&lt;/h3&gt;
+
+&lt;p&gt;When I worked in “regular” offices, I used to be that guy that wanted to go home urgently after work. I wanted to meet my partner, know more about the day she had, and have time for a bit of sport and cooking. So I wasn’t really social, I have to admit. At the opposite, working from home makes you want to go out after work! So in the end, I end up going out more than one year ago, which is great for social connections (and bad for my kidneys).&lt;/p&gt;
+
+&lt;p&gt;Also, it makes really eager to see your co-workers. Something that no one feels when you work in the same office as them everyday!&lt;/p&gt;
+
+&lt;h3&gt;Work/life balance&lt;/h3&gt;
+
+&lt;p&gt;Obviously, you’ll always feel attracted to do “a bit” of work at night or during weekends, and you’ll really want to fix ASAP that issue on production, even if it’s Sunday morning. However, I think each passionate developer in startup does, remote or not. But at least, the remote developer has everything set up at home!&lt;/p&gt;
+
+&lt;p&gt;It’s true that the boundary between work and life is tinier since I work remotely. But it also has some very nice aspects! For example, we decided with my partner to spend one week per month out of our city of Grenoble. All of this, without any days off! That would just be impossible with a regular job. Also, travelling on a regular basis makes me really less eager to go on holidays. When I come back from a week of remote working in a new city, I feel like after a week of holidays: loaded back!&lt;/p&gt;
+
+&lt;p&gt;I forgot to mention that working from home makes renting a room on Airbnb really easy. That’s a very nice way to meet new people, too.&lt;/p&gt;
+
+&lt;p&gt;In the end, I’d say that remote working broke the confrontation I had between work and private life. They now mix together, for the best!&lt;/p&gt;
+
+&lt;h3&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Remote working is amazing. During the last 12 months, I’ve worked from Lisbon, Athens and Malaga with the Hunter crew (Roma is coming!), and from Nice, Val Thorens, Tours, London and Paris on my own. I feel more motivated and grateful than ever to work for Hunter.io. And lastly, I’ve never been so efficient at work.&lt;/p&gt;
+
+&lt;p&gt;I have so much other advantages in mind, but I’m keeping them for another post ;)&lt;/p&gt;
+
+&lt;p&gt;Now, my “mission” is to make this a reality for more people, especially for developers where this style of working is really appropriate. I’m doing my best to convince sceptical people I meet that it’s the smartest way of working (especially in Grenoble where the traffic jams are a pain for everyone), but there’s still some work to do!&lt;/p&gt;
+
+&lt;p&gt;By the way, I’m really curious to talk with you if you’re against remote working!&lt;/p&gt;
+
+&lt;h3&gt;Pics and proofs&lt;/h3&gt;
+
+&lt;p&gt;Just in case you don’t believe me working outside of an open space works…&lt;/p&gt;
+
+&lt;p&gt;Peer coding in the mountains with the team: nailed it 😎
+&lt;img src=&quot;http://blog.bastienlibersa.fr/img/post/remote-1.jpg&quot; alt=&quot;Hunter crew at work&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Debugging in front of a 🔥: easy
+&lt;img src=&quot;http://blog.bastienlibersa.fr/img/post/remote-2.jpg&quot; alt=&quot;Debugging in front of a chimney&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Your turn?&lt;/p&gt;
+</description>
+        <pubDate>Fri, 15 Sep 2017 00:00:00 +0200</pubDate>
+      </item>
     
       <item>
         <title>Manage your Kubernetes deployments with the Kube API</title>
@@ -150,19 +210,19 @@ present the results we get with the program we set at Hunter.io.&lt;/p&gt;
 
 &lt;p&gt;Basically, our &lt;a href=&quot;https://github.com/BastienL/zero-downtime-deployment-with-docker/blob/master/docker-compose.yml&quot;&gt;docker-compose.yml&lt;/a&gt; file will be:&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;l-Scalar-Plain&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;2&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;dockercloud/hello-world&lt;/span&gt;
-  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;lb&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;dockercloud/haproxy&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;links&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;app&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;/var/run/docker.sock:/var/run/docker.sock&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;80:80&lt;/span&gt;
-      &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;1936:1936&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;2&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;dockercloud/hello-world&lt;/span&gt;
+  &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;lb&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;dockercloud/haproxy&lt;/span&gt;
+    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;links&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;app&lt;/span&gt;
+    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;/var/run/docker.sock:/var/run/docker.sock&lt;/span&gt;
+    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;80:80&lt;/span&gt;
+      &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;1936:1936&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;NB: we exposed port 1936 to have access to the HAProxy stats. You should remove it once in production.&lt;/p&gt;
 

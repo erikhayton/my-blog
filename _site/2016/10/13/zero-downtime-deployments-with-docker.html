@@ -163,19 +163,19 @@
 
 <p>Basically, our <a href="https://github.com/BastienL/zero-downtime-deployment-with-docker/blob/master/docker-compose.yml">docker-compose.yml</a> file will be:</p>
 
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">version</span><span class="p-Indicator">:</span> <span class="s">&#39;2&#39;</span>
-<span class="l-Scalar-Plain">services</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">app</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">image</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">dockercloud/hello-world</span>
-  <span class="l-Scalar-Plain">lb</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">image</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">dockercloud/haproxy</span>
-    <span class="l-Scalar-Plain">links</span><span class="p-Indicator">:</span>
-      <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app</span>
-    <span class="l-Scalar-Plain">volumes</span><span class="p-Indicator">:</span>
-      <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">/var/run/docker.sock:/var/run/docker.sock</span>
-    <span class="l-Scalar-Plain">ports</span><span class="p-Indicator">:</span>
-      <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">80:80</span>
-      <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">1936:1936</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="s">&#39;2&#39;</span>
+<span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">app</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dockercloud/hello-world</span>
+  <span class="l l-Scalar l-Scalar-Plain">lb</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dockercloud/haproxy</span>
+    <span class="l l-Scalar l-Scalar-Plain">links</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">app</span>
+    <span class="l l-Scalar l-Scalar-Plain">volumes</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/var/run/docker.sock:/var/run/docker.sock</span>
+    <span class="l l-Scalar l-Scalar-Plain">ports</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">1936:1936</span></code></pre></figure>
 
 <p>NB: we exposed port 1936 to have access to the HAProxy stats. You should remove it once in production.</p>
 
