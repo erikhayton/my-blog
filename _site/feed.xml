@@ -2,15 +2,15 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title></title>
-    <atom:link href="http://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
-    <link>http://blog.bastienlibersa.fr/</link>
+    <atom:link href="https://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
+    <link>https://blog.bastienlibersa.fr/</link>
     <description></description>
-    <pubDate>Fri, 15 Sep 2017 19:33:58 +0200</pubDate>
+    <pubDate>Fri, 15 Sep 2017 19:37:28 +0200</pubDate>
     
       <item>
         <title>One year of remote working</title>
-        <link>http://blog.bastienlibersa.fr/2017/09/15/one-year-of-remote-working.html</link>
-        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2017/09/15/one-year-of-remote-working.html</guid>
+        <link>https://blog.bastienlibersa.fr/2017/09/15/one-year-of-remote-working.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2017/09/15/one-year-of-remote-working.html</guid>
         <description>&lt;p&gt;Over a year ago (I can’t believe how fast time flies!), I began working 100% remotely for &lt;a href=&quot;https://hunter.io&quot; target=&quot;_blank&quot;&gt;hunter.io&lt;/a&gt;. This has been my best professionnal decision ever. In this post, I wanted to share a couple of things working remotely has taught me.&lt;/p&gt;
 
 &lt;h3&gt;Motivation&lt;/h3&gt;
@@ -57,10 +57,10 @@
 &lt;p&gt;Just in case you don’t believe me working outside of an open space works…&lt;/p&gt;
 
 &lt;p&gt;Peer coding in the mountains with the team: nailed it 😎
-&lt;img src=&quot;http://blog.bastienlibersa.fr/img/post/remote-1.jpg&quot; alt=&quot;Hunter crew at work&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://blog.bastienlibersa.fr/img/post/remote-1.jpg&quot; alt=&quot;Hunter crew at work&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Debugging in front of a 🔥: easy
-&lt;img src=&quot;http://blog.bastienlibersa.fr/img/post/remote-2.jpg&quot; alt=&quot;Debugging in front of a chimney&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://blog.bastienlibersa.fr/img/post/remote-2.jpg&quot; alt=&quot;Debugging in front of a chimney&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Your turn?&lt;/p&gt;
 </description>
@@ -69,8 +69,8 @@
     
       <item>
         <title>Manage your Kubernetes deployments with the Kube API</title>
-        <link>http://blog.bastienlibersa.fr/2017/04/03/manage-kubernetes-with-api.html</link>
-        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2017/04/03/manage-kubernetes-with-api.html</guid>
+        <link>https://blog.bastienlibersa.fr/2017/04/03/manage-kubernetes-with-api.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2017/04/03/manage-kubernetes-with-api.html</guid>
         <description>&lt;p&gt;At &lt;a href=&quot;https://hunter.io&quot;&gt;Hunter&lt;/a&gt;, we recently decided to move parts of our containers management from Cloud66 to Kubernetes. We wanted to have more control over the resources requested by our apps, and also speed up the deployment process which was really slow at C66.&lt;/p&gt;
 
 &lt;p&gt;Kubernetes comes with a great CLI called &lt;code&gt;kubectl&lt;/code&gt; to manage and run commands into your cluster. Thing is, it’s not really convenient to install and use it inside build machines such as a CircleCI machine. &lt;a href=&quot;https://github.com/kubernetes/contrib/tree/master/continuousdelivery&quot;&gt;Some scripts&lt;/a&gt; have been created by the community to help you but my own experience shows that’s not a really smooth solution. And things get worse if you want to make a guy such as &lt;a href=&quot;https://hubot.github.com/&quot;&gt;Hubot&lt;/a&gt; (Node.js-based bot built by GitHub) manage your deployments.&lt;/p&gt;
@@ -184,8 +184,8 @@ https://{YOUR_KUBE_MASTER_IP}/apis/extensions/v1beta1/namespaces/default/deploym
     
       <item>
         <title>Bug Bounty Program</title>
-        <link>http://blog.bastienlibersa.fr/2016/12/16/bug-bounty-program.html</link>
-        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/12/16/bug-bounty-program.html</guid>
+        <link>https://blog.bastienlibersa.fr/2016/12/16/bug-bounty-program.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2016/12/16/bug-bounty-program.html</guid>
         <description>&lt;p&gt;These are the slides of a talk I gave for the december 2016 Grenoble Human Talks.&lt;/p&gt;
 
 &lt;p&gt;The aim of this talk was to present the ideas behind bug bounty programs, and to
@@ -202,8 +202,8 @@ present the results we get with the program we set at Hunter.io.&lt;/p&gt;
     
       <item>
         <title>Zero-downtime deployments with Docker</title>
-        <link>http://blog.bastienlibersa.fr/2016/10/13/zero-downtime-deployments-with-docker.html</link>
-        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/10/13/zero-downtime-deployments-with-docker.html</guid>
+        <link>https://blog.bastienlibersa.fr/2016/10/13/zero-downtime-deployments-with-docker.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2016/10/13/zero-downtime-deployments-with-docker.html</guid>
         <description>&lt;p&gt;Docker became in a couple of years the DevOps’ new best friend. The goal of this article is not to present the multiple benefits of Docker, but rather to talk about an use case where Docker can really be useful: Zero-downtime deployments. In other words, the ability to update your online dockerized service (an app, a website, etc.) without any downtime.&lt;/p&gt;
 
 &lt;p&gt;To do so, we need at least two containers running our service (we’ll call them &lt;i&gt;app&lt;/i&gt;) and one container running our load balancer (we’ll call him &lt;i&gt;lb&lt;/i&gt;). The &lt;a href=&quot;https://github.com/docker/dockercloud-haproxy&quot;&gt;dockercloud/haproxy&lt;/a&gt; image is a great candidate for the load balancing part, as it embeds HAProxy and some useful commands to scale up and down our app containers. For the app, we’ll simply use the &lt;a href=&quot;https://github.com/docker/dockercloud-hello-world&quot;&gt;dockercloud/hello-world&lt;/a&gt; image.&lt;/p&gt;
@@ -253,8 +253,8 @@ present the results we get with the program we set at Hunter.io.&lt;/p&gt;
     
       <item>
         <title>Resources to find a remote job</title>
-        <link>http://blog.bastienlibersa.fr/2016/08/30/find-remote-job.html</link>
-        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/08/30/find-remote-job.html</guid>
+        <link>https://blog.bastienlibersa.fr/2016/08/30/find-remote-job.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2016/08/30/find-remote-job.html</guid>
         <description>&lt;p&gt;A few months ago, I decided to quit my job at Citizen Republic to get a new position. I had many reasons to change, but one of the most important was I really wanted to know what it was like to work remotely. I don’t mean working from home time-to-time for convenience, but really work for a company where offices and face-to-face meetings do not exist.&lt;/p&gt;
 
 &lt;p&gt;I think the folks at &lt;a href=&quot;https://37signals.com/remote&quot; target=&quot;_blank&quot;&gt;37 Signals&lt;/a&gt; really convinced me ;)&lt;/p&gt;
@@ -281,8 +281,8 @@ present the results we get with the program we set at Hunter.io.&lt;/p&gt;
     
       <item>
         <title>Export your PrestaShop orders without module</title>
-        <link>http://blog.bastienlibersa.fr/2016/04/08/export-prestashop-orders.html</link>
-        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/04/08/export-prestashop-orders.html</guid>
+        <link>https://blog.bastienlibersa.fr/2016/04/08/export-prestashop-orders.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2016/04/08/export-prestashop-orders.html</guid>
         <description>&lt;p&gt;With a default install of PrestaShop (any version), you cannot export all your orders and clients data to a file. You can either export your orders (but do not have any reference about the client) or your clients (but can’t see his orders). That sounds a bit crazy but this is the choice they made.&lt;/p&gt;
 
 &lt;p&gt;But what if you want to send an email to your last 100 clients?&lt;/p&gt;
@@ -313,8 +313,8 @@ present the results we get with the program we set at Hunter.io.&lt;/p&gt;
     
       <item>
         <title>Improve your email deliverability</title>
-        <link>http://blog.bastienlibersa.fr/2016/03/04/improve-email-deliverability.html</link>
-        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/03/04/improve-email-deliverability.html</guid>
+        <link>https://blog.bastienlibersa.fr/2016/03/04/improve-email-deliverability.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2016/03/04/improve-email-deliverability.html</guid>
         <description>&lt;p&gt;These are the slides of a talk I gave for the march 2016 Grenoble Human Talks.&lt;/p&gt;
 
 &lt;p&gt;The aim of this talk was to present a few good practices and hints to improve the deliverability of the emails you send.&lt;/p&gt;
@@ -330,8 +330,8 @@ present the results we get with the program we set at Hunter.io.&lt;/p&gt;
     
       <item>
         <title>Introduction to AWS</title>
-        <link>http://blog.bastienlibersa.fr/2016/03/03/introduction-to-aws.html</link>
-        <guid isPermaLink="true">http://blog.bastienlibersa.fr/2016/03/03/introduction-to-aws.html</guid>
+        <link>https://blog.bastienlibersa.fr/2016/03/03/introduction-to-aws.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2016/03/03/introduction-to-aws.html</guid>
         <description>&lt;p&gt;These are the slides of a talk I gave for the october 2015 Grenoble Human Talks.&lt;/p&gt;
 
 &lt;p&gt;The aim of this talk was to answer to very simple questions:&lt;/p&gt;
