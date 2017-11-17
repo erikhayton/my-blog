@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+	<meta charset="utf-8">
+	<title>How to rotate your logs hourly | Bastien's blog</title>
+	<meta name="description" content="A common practice with Docker containers is to log everything they output to /dev/stdout and /dev/stderr. This is perfectly fine for most containers. But wit...">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!--Favicon-->
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+	<!-- Canonical -->
+	<link rel="canonical" href="https://blog.bastienlibersa.fr/2017/11/17/how-to-rotate-your-logs-hourly.html">
+
+	<!-- RSS -->
+	<link rel="alternate" type="application/atom+xml" title="Bastien's blog" href="https://blog.bastienlibersa.fr/feed.xml" />
+
+	<!-- Font Awesome -->
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<!-- Google Fonts -->
+	
+	<link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,700italic,400italic" rel="stylesheet" type="text/css">
+	
+
+	<!-- KaTeX -->
+	
+
+	<!-- Google Analytics -->
+	
+	<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-20546327-7', 'auto');
+	ga('send', 'pageview');
+	</script>
+	
+</head>
+
+  <body>
+    <header class="site-header">
+	<div class="branding">
+		
+		<a href="/">
+			<img class="avatar" src="https://secure.gravatar.com/avatar/38d022408a7f3aa1e90e078a8f809d11?s=100" alt=""/>
+		</a>
+		
+		<h1 class="site-title">
+			<a href="/">Bastien's blog</a>
+		</h1>
+	</div>
+	<nav class="site-nav">
+		<ul>
+			<li>
+				<a class="page-link" href="https://bastienlibersa.fr" target="_blank">
+					Me
+				</a>
+			</li>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<!-- Social icons from Font Awesome, if enabled -->
+			
+
+
+<li>
+	<a href="mailto:bastien.libersa@gmail.com" title="Email">
+		<i class="fa fa-fw fa-envelope"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+	<a href="https://github.com/BastienL" title="Follow on GitHub" target="_blank">
+		<i class="fa fa-fw fa-github"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+<li>
+	<a href="https://fr.linkedin.com/in/bastien-libersa-9b88a225" title="Follow on LinkedIn" target="_blank">
+		<i class="fa fa-fw fa-linkedin"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+
+
+<li>
+	<a href="http://stackoverflow.com/users/877323/bastien-libersa" title="Follow on Stack Exchange" target="_blank">
+		<i class="fa fa-fw fa-stack-exchange"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+<li>
+	<a href="https://twitter.com/blibersa" title="Follow on Twitter" target="_blank">
+		<i class="fa fa-fw fa-twitter"></i>
+	</a>
+</li>
+
+
+
+
+
+
+		</ul>
+	</nav>
+</header>
+
+    <div class="content">
+      <article >
+  <header style="background-image: url('/')">
+    <h1 class="title">How to rotate your logs hourly</h1>
+    <p class="meta">
+    November 17, 2017
+    
+    </p>
+  </header>
+  <section class="post-content"><p>A common practice with Docker containers is to log everything they output to <code>/dev/stdout</code> and <code>/dev/stderr</code>. This is perfectly fine for most containers. But with dockerized load-balancers, I can create issues. This is what we recently faced at Hunter.</p>
+
+<p>On Ubuntu, the default <code>logrotate</code> behaviour is to rotate files weekly and keep 4 weeks of log. Now imagine a load-balancer serving millions of requests a day? That makes a lot of logs. As a consequence, the first issue we had was that the weekly log rotation was consuming <em>a lot</em> of CPU, at a point where the load balancer had troubles doing his load-balancing job. Scary. The second one, obviously, was about disk space. Keeping one month of requests, even gzipped, takes a lot of space.</p>
+
+<p>Hopefully, I came up with a simple and obvious solution that fixed both problems: rotate the logs more often and keep them less long. If you want to do the same, it’s a simple as:</p>
+
+<ol>
+  <li>Create a new logrotate rule for your containers (<code>/etc/logrotate.d/containers</code> for example):</li>
+</ol>
+
+<pre>
+/var/lib/docker/containers/*/*.log {
+  rotate 24
+  hourly
+  compress
+  size=10M
+  missingok
+  delaycompress
+  copytruncate
+}
+</pre>
+
+<p>Here we’ll rotate our logs hourly, and will keep only 24 of them. So that means we only keep the logs of the last 24 hours. Feel free to increase this at your convenience.</p>
+
+<ol>
+  <li>Move <code>logrotate</code> from <code>/etc/cron.daily</code> (default location) to <code>/etc/cron.hourly</code>:
+    <pre><code>mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
+</code></pre>
+  </li>
+</ol>
+
+<p>Now, your logs will be rotated on a hourly basis so you won’t even notice the CPU usage increase during the log rotation. And as you’ll keep only a few of them, your disk will be happy :)</p>
+</section>
+</article>
+
+<!-- Post navigation -->
+
+
+<!-- Disqus -->
+
+
+    </div>
+    
+
+
+<footer class="site-footer">
+	<p class="text">Powered by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> with <a href="https://rohanchandra.github.io/project/type/" target="_blank">Type Theme</a>
+</p>
+</footer>
+
+
+  </body>
+</html>
