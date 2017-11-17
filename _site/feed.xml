@@ -5,7 +5,7 @@
     <atom:link href="https://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
     <link>https://blog.bastienlibersa.fr/</link>
     <description></description>
-    <pubDate>Fri, 17 Nov 2017 19:05:08 +0100</pubDate>
+    <pubDate>Fri, 17 Nov 2017 19:07:48 +0100</pubDate>
     
       <item>
         <title>How to rotate your logs hourly</title>
@@ -17,9 +17,7 @@
 
 &lt;p&gt;Hopefully, I came up with a simple and obvious solution that fixed both problems: rotate the logs more often and keep them less long. If you want to do the same, it’s a simple as:&lt;/p&gt;
 
-&lt;ol&gt;
-  &lt;li&gt;Create a new logrotate rule for your containers (&lt;code&gt;/etc/logrotate.d/containers&lt;/code&gt; for example):&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;1/ Create a new logrotate rule for your containers (&lt;code&gt;/etc/logrotate.d/containers&lt;/code&gt; for example):&lt;/p&gt;
 
 &lt;pre&gt;
 /var/lib/docker/containers/*/*.log {
@@ -35,12 +33,9 @@
 
 &lt;p&gt;Here we’ll rotate our logs hourly, and will keep only 24 of them. So that means we only keep the logs of the last 24 hours. Feel free to increase this at your convenience.&lt;/p&gt;
 
-&lt;ol&gt;
-  &lt;li&gt;Move &lt;code&gt;logrotate&lt;/code&gt; from &lt;code&gt;/etc/cron.daily&lt;/code&gt; (default location) to &lt;code&gt;/etc/cron.hourly&lt;/code&gt;:
-    &lt;pre&gt;&lt;code&gt;mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
+&lt;p&gt;2/ Move &lt;code&gt;logrotate&lt;/code&gt; from &lt;code&gt;/etc/cron.daily&lt;/code&gt; (default location) to &lt;code&gt;/etc/cron.hourly&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
 &lt;/code&gt;&lt;/pre&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
 
 &lt;p&gt;Now, your logs will be rotated on a hourly basis so you won’t even notice the CPU usage increase during the log rotation. And as you’ll keep only a few of them, your disk will be happy :)&lt;/p&gt;
 </description>

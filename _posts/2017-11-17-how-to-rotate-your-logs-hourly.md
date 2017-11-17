@@ -8,7 +8,7 @@ On Ubuntu, the default `logrotate` behaviour is to rotate files weekly and keep 
 
 Hopefully, I came up with a simple and obvious solution that fixed both problems: rotate the logs more often and keep them less long. If you want to do the same, it's a simple as:
 
-1. Create a new logrotate rule for your containers (`/etc/logrotate.d/containers` for example):
+1/ Create a new logrotate rule for your containers (`/etc/logrotate.d/containers` for example):
 
 <pre>
 /var/lib/docker/containers/*/*.log {
@@ -24,7 +24,7 @@ Hopefully, I came up with a simple and obvious solution that fixed both problems
 
 Here we'll rotate our logs hourly, and will keep only 24 of them. So that means we only keep the logs of the last 24 hours. Feel free to increase this at your convenience.
 
-2. Move `logrotate` from `/etc/cron.daily` (default location) to `/etc/cron.hourly`:
+2/ Move `logrotate` from `/etc/cron.daily` (default location) to `/etc/cron.hourly`:
 ```
 mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
 ```
