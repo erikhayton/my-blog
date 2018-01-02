@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+	<meta charset="utf-8">
+	<title>Why Kubernetes Pod Quality of Service matters | Bastien's blog</title>
+	<meta name="description" content="I (painfully) discovered a few weeks ago why specifying how much CPU and RAM a container needs was so important on Kubernetes. In this post, I will explain w...">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!--Favicon-->
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+	<!-- Canonical -->
+	<link rel="canonical" href="https://blog.bastienlibersa.fr/2018/01/02/why-kubernetes-pod-quality-of-service-matters.html">
+
+	<!-- RSS -->
+	<link rel="alternate" type="application/atom+xml" title="Bastien's blog" href="https://blog.bastienlibersa.fr/feed.xml" />
+
+	<!-- Font Awesome -->
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<!-- Google Fonts -->
+	
+	<link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,700italic,400italic" rel="stylesheet" type="text/css">
+	
+
+	<!-- KaTeX -->
+	
+
+	<!-- Google Analytics -->
+	
+	<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-20546327-7', 'auto');
+	ga('send', 'pageview');
+	</script>
+	
+</head>
+
+  <body>
+    <header class="site-header">
+	<div class="branding">
+		
+		<a href="/">
+			<img class="avatar" src="https://secure.gravatar.com/avatar/38d022408a7f3aa1e90e078a8f809d11?s=100" alt=""/>
+		</a>
+		
+		<h1 class="site-title">
+			<a href="/">Bastien's blog</a>
+		</h1>
+	</div>
+	<nav class="site-nav">
+		<ul>
+			<li>
+				<a class="page-link" href="https://bastienlibersa.fr" target="_blank">
+					Me
+				</a>
+			</li>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<!-- Social icons from Font Awesome, if enabled -->
+			
+
+
+<li>
+	<a href="mailto:bastien.libersa@gmail.com" title="Email">
+		<i class="fa fa-fw fa-envelope"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+	<a href="https://github.com/BastienL" title="Follow on GitHub" target="_blank">
+		<i class="fa fa-fw fa-github"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+<li>
+	<a href="https://fr.linkedin.com/in/bastien-libersa-9b88a225" title="Follow on LinkedIn" target="_blank">
+		<i class="fa fa-fw fa-linkedin"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+
+
+<li>
+	<a href="http://stackoverflow.com/users/877323/bastien-libersa" title="Follow on Stack Exchange" target="_blank">
+		<i class="fa fa-fw fa-stack-exchange"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+<li>
+	<a href="https://twitter.com/blibersa" title="Follow on Twitter" target="_blank">
+		<i class="fa fa-fw fa-twitter"></i>
+	</a>
+</li>
+
+
+
+
+
+
+		</ul>
+	</nav>
+</header>
+
+    <div class="content">
+      <article >
+  <header style="background-image: url('/')">
+    <h1 class="title">Why Kubernetes Pod Quality of Service matters</h1>
+    <p class="meta">
+    January 2, 2018
+    
+    </p>
+  </header>
+  <section class="post-content"><p>I (painfully) discovered a few weeks ago why specifying how much CPU and RAM a container needs was so important on Kubernetes. In this post, I will explain why ;)</p>
+
+<h3>1. The basis</h3>
+
+<p>Each container in a Kubernetes pod can specifify the following:</p>
+<ul>
+  <li>CPU request</li>
+  <li>Memory request</li>
+  <li>CPU limit</li>
+  <li>Memory limit</li>
+</ul>
+
+<p>The sum of all the requests and limits of all the containers in a pod defines the pod requests/limits.</p>
+
+<p>When a pod is created, the Kubernetes scheduler selects a node which has enough CPU and memory according to the pod requirements (its requests). On the other hand, a container using more CPU or memory than its limits becomes a candidate for termination, and can therefore be terminated at any time.</p>
+
+<h3>2. The Quality of Service</h3>
+
+<p>This is where the QoS classes really matter:</p>
+<ul>
+  <li>a pod with equal limits and requests set for each container will be classified as <b>Guaranteed</b></li>
+  <li>a pod with different limits and requests set for each container will be classified as <b>Burstable</b></li>
+  <li>a pod without limits and requests set for each container will be classified as <b>Best-Effort</b>.</li>
+</ul>
+
+<p>As you probably guessed it, Guaranteed &gt; Burstable &gt; Best-Effort. A guaranteed pod is garanteed to not be killed until it exceed its limits (or the cluster is under memory pressure and there are no lower priority pods that can be killed). This is definitely what you want for you most important pods.</p>
+
+<h3>3. What happened in my case</h3>
+
+<p>At Hunter, we moved from OVH to DigitalOcean, and deployed for this occasion our Kubernetes cluster on instances with fewer RAM than our previous nodes. For this reason, our new cluster was under a constant memory pressure, whereas the old one always had plenty of memory left.</p>
+
+<p>We had installed Flannel on our brand new cluster using <a href="https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#pod-network" target="_blank">the official guide</a>, that, as you may see, doesn’t set requests and limits for the <a href="https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml" target="_blank"><i>kube-flannel container</i></a>. <b>The result is devastating if you run several pods with requests and limits set.</b></p>
+
+<p>As explained sooner, the <i>kube-flannel-ds</i> pod will be classified as Best-Effort. For this reason, it will be killed by Kubernetes if needed, making the Kubernetes internal network broken. Pods won’t be able to ping each other, Services won’t be reachable from pods, etc., obviously because the Pod network won’t update the node routing table…</p>
+
+<p>This had never happened on the old cluster (with the same setup) because it had never been under such a memory pressure.</p>
+
+<h3>4. How to prevent this</h3>
+
+<p>You should <b>always</b> set resources requests and limits to your pods, unless you agree to let Kubernetes kill them if the cluster is under memory pressure.</p>
+
+<p>You should also spread the word every time you follow a tutorial that do no set requests or limit on containers (even if <a href="https://github.com/kubernetes/website/issues/6682" target="_blank">I haven’t been really successful</a> for my part ;)).</p>
+</section>
+</article>
+
+<!-- Post navigation -->
+
+
+<!-- Disqus -->
+
+
+    </div>
+    
+
+
+<footer class="site-footer">
+	<p class="text">Powered by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> with <a href="https://rohanchandra.github.io/project/type/" target="_blank">Type Theme</a>
+</p>
+</footer>
+
+
+  </body>
+</html>

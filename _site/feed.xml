@@ -5,7 +5,57 @@
     <atom:link href="https://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
     <link>https://blog.bastienlibersa.fr/</link>
     <description></description>
-    <pubDate>Fri, 17 Nov 2017 19:07:48 +0100</pubDate>
+    <pubDate>Tue, 02 Jan 2018 23:16:58 +0100</pubDate>
+    
+      <item>
+        <title>Why Kubernetes Pod Quality of Service matters</title>
+        <link>https://blog.bastienlibersa.fr/2018/01/02/why-kubernetes-pod-quality-of-service-matters.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2018/01/02/why-kubernetes-pod-quality-of-service-matters.html</guid>
+        <description>&lt;p&gt;I (painfully) discovered a few weeks ago why specifying how much CPU and RAM a container needs was so important on Kubernetes. In this post, I will explain why ;)&lt;/p&gt;
+
+&lt;h3&gt;1. The basis&lt;/h3&gt;
+
+&lt;p&gt;Each container in a Kubernetes pod can specifify the following:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;CPU request&lt;/li&gt;
+  &lt;li&gt;Memory request&lt;/li&gt;
+  &lt;li&gt;CPU limit&lt;/li&gt;
+  &lt;li&gt;Memory limit&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The sum of all the requests and limits of all the containers in a pod defines the pod requests/limits.&lt;/p&gt;
+
+&lt;p&gt;When a pod is created, the Kubernetes scheduler selects a node which has enough CPU and memory according to the pod requirements (its requests). On the other hand, a container using more CPU or memory than its limits becomes a candidate for termination, and can therefore be terminated at any time.&lt;/p&gt;
+
+&lt;h3&gt;2. The Quality of Service&lt;/h3&gt;
+
+&lt;p&gt;This is where the QoS classes really matter:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;a pod with equal limits and requests set for each container will be classified as &lt;b&gt;Guaranteed&lt;/b&gt;&lt;/li&gt;
+  &lt;li&gt;a pod with different limits and requests set for each container will be classified as &lt;b&gt;Burstable&lt;/b&gt;&lt;/li&gt;
+  &lt;li&gt;a pod without limits and requests set for each container will be classified as &lt;b&gt;Best-Effort&lt;/b&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As you probably guessed it, Guaranteed &amp;gt; Burstable &amp;gt; Best-Effort. A guaranteed pod is garanteed to not be killed until it exceed its limits (or the cluster is under memory pressure and there are no lower priority pods that can be killed). This is definitely what you want for you most important pods.&lt;/p&gt;
+
+&lt;h3&gt;3. What happened in my case&lt;/h3&gt;
+
+&lt;p&gt;At Hunter, we moved from OVH to DigitalOcean, and deployed for this occasion our Kubernetes cluster on instances with fewer RAM than our previous nodes. For this reason, our new cluster was under a constant memory pressure, whereas the old one always had plenty of memory left.&lt;/p&gt;
+
+&lt;p&gt;We had installed Flannel on our brand new cluster using &lt;a href=&quot;https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#pod-network&quot; target=&quot;_blank&quot;&gt;the official guide&lt;/a&gt;, that, as you may see, doesn’t set requests and limits for the &lt;a href=&quot;https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml&quot; target=&quot;_blank&quot;&gt;&lt;i&gt;kube-flannel container&lt;/i&gt;&lt;/a&gt;. &lt;b&gt;The result is devastating if you run several pods with requests and limits set.&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;As explained sooner, the &lt;i&gt;kube-flannel-ds&lt;/i&gt; pod will be classified as Best-Effort. For this reason, it will be killed by Kubernetes if needed, making the Kubernetes internal network broken. Pods won’t be able to ping each other, Services won’t be reachable from pods, etc., obviously because the Pod network won’t update the node routing table…&lt;/p&gt;
+
+&lt;p&gt;This had never happened on the old cluster (with the same setup) because it had never been under such a memory pressure.&lt;/p&gt;
+
+&lt;h3&gt;4. How to prevent this&lt;/h3&gt;
+
+&lt;p&gt;You should &lt;b&gt;always&lt;/b&gt; set resources requests and limits to your pods, unless you agree to let Kubernetes kill them if the cluster is under memory pressure.&lt;/p&gt;
+
+&lt;p&gt;You should also spread the word every time you follow a tutorial that do no set requests or limit on containers (even if &lt;a href=&quot;https://github.com/kubernetes/website/issues/6682&quot; target=&quot;_blank&quot;&gt;I haven’t been really successful&lt;/a&gt; for my part ;)).&lt;/p&gt;
+</description>
+        <pubDate>Tue, 02 Jan 2018 00:00:00 +0100</pubDate>
+      </item>
     
       <item>
         <title>How to rotate your logs hourly</title>
