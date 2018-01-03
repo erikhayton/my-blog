@@ -5,7 +5,7 @@
     <atom:link href="https://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
     <link>https://blog.bastienlibersa.fr/</link>
     <description></description>
-    <pubDate>Tue, 02 Jan 2018 23:16:58 +0100</pubDate>
+    <pubDate>Wed, 03 Jan 2018 09:11:38 +0100</pubDate>
     
       <item>
         <title>Why Kubernetes Pod Quality of Service matters</title>
@@ -15,7 +15,7 @@
 
 &lt;h3&gt;1. The basis&lt;/h3&gt;
 
-&lt;p&gt;Each container in a Kubernetes pod can specifify the following:&lt;/p&gt;
+&lt;p&gt;Each container in a Kubernetes pod can specify the following:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;CPU request&lt;/li&gt;
   &lt;li&gt;Memory request&lt;/li&gt;
