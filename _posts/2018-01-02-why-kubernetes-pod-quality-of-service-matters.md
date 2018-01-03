@@ -6,7 +6,7 @@ I (painfully) discovered a few weeks ago why specifying how much CPU and RAM a c
 
 <h3>1. The basis</h3>
 
-Each container in a Kubernetes pod can specifify the following:
+Each container in a Kubernetes pod can specify the following:
 - CPU request
 - Memory request
 - CPU limit
