@@ -5,7 +5,44 @@
     <atom:link href="https://blog.bastienlibersa.fr/feed.xml" rel="self" type="application/rss+xml"/>
     <link>https://blog.bastienlibersa.fr/</link>
     <description></description>
-    <pubDate>Wed, 03 Jan 2018 09:11:38 +0100</pubDate>
+    <pubDate>Tue, 12 Jun 2018 19:53:58 +0200</pubDate>
+    
+      <item>
+        <title>How to keep a command running despite closing the SSH connection</title>
+        <link>https://blog.bastienlibersa.fr/2018/06/12/how-to-keep-a-command-running-despite-closing-ssh.html</link>
+        <guid isPermaLink="true">https://blog.bastienlibersa.fr/2018/06/12/how-to-keep-a-command-running-despite-closing-ssh.html</guid>
+        <description>&lt;p&gt;I’m sure it happened to you, more than once: you run a command on a remote host, thinking it will finish in a few seconds. Unfortunately, after 5 minutes looking at your terminal and hoping for the command to be done soon, you realize that it will take hours. Obviously, it’s Friday afternoon and you had planned a trip for the weekend.&lt;/p&gt;
+
+&lt;p&gt;There are, I guess, two kind of persons in this situation:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;the first group will most likely SIGINT the command and postpone it to Monday morning;&lt;/li&gt;
+  &lt;li&gt;the second one will try to gracefully handle this situation by letting the command run and enjoying that well-deserved weekend trip.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You better leave here if you feel like you’re a first-group person 😉&lt;/p&gt;
+
+&lt;p&gt;In case you’d like to let the command run even after closing the SSH connection, there is a solution, that I experienced myself recently (on a pg_dump, to be precise):&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Send a &lt;b&gt;SIGTSTP&lt;/b&gt; to the command by typing &lt;b&gt;CTRL+Z&lt;/b&gt; in the terminal running your command. That will put the command in the background, in a “paused” state.&lt;/li&gt;
+  &lt;li&gt;Run the &lt;b&gt;bg&lt;/b&gt; command. This will resume your paused command, and most importantly, will run it in the background. We’re getting close!&lt;/li&gt;
+  &lt;li&gt;Last, run the &lt;b&gt;disown&lt;/b&gt; command. This will remove (or let’s say detach) your command from the shell session.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;You can now safely &lt;b&gt;exit&lt;/b&gt;, close your laptop and go 🚀!&lt;/p&gt;
+
+&lt;p&gt;Here is a 3-lines summary if you should already been gone:&lt;/p&gt;
+&lt;pre&gt;
+$ CTRL+Z
+$ bg
+$ disown
+&lt;/pre&gt;
+
+&lt;p&gt;Not too hard, right?&lt;/p&gt;
+
+&lt;p&gt;And please, next time, do yourself a favor: use &lt;b&gt;nohup&lt;/b&gt; or &lt;b&gt;screen&lt;/b&gt; before launching any remote command!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 12 Jun 2018 00:00:00 +0200</pubDate>
+      </item>
     
       <item>
         <title>Why Kubernetes Pod Quality of Service matters</title>

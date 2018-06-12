@@ -2,8 +2,8 @@
 <html class="no-js">
   <head>
 	<meta charset="utf-8">
-	<title>Page not found | Bastien's blog</title>
-	<meta name="description" content="Bastien Libersa's blog, writing about Web Development, Cloud, Continous delivery, and other Web related stuff">
+	<title>How to keep a command running despite closing the SSH connection | Bastien's blog</title>
+	<meta name="description" content="I’m sure it happened to you, more than once: you run a command on a remote host, thinking it will finish in a few seconds. Unfortunately, after 5 minutes loo...">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<!-- CSS -->
@@ -13,7 +13,7 @@
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
 	<!-- Canonical -->
-	<link rel="canonical" href="https://blog.bastienlibersa.fr/404.html">
+	<link rel="canonical" href="https://blog.bastienlibersa.fr/2018/06/12/how-to-keep-a-command-running-despite-closing-ssh.html">
 
 	<!-- RSS -->
 	<link rel="alternate" type="application/atom+xml" title="Bastien's blog" href="https://blog.bastienlibersa.fr/feed.xml" />
@@ -153,11 +153,49 @@
     <div class="content">
       <article >
   <header style="background-image: url('/')">
-    <h1 class="title">Page not found</h1>
+    <h1 class="title">How to keep a command running despite closing the SSH connection</h1>
+    <p class="meta">
+    June 12, 2018
+    
+    </p>
   </header>
-  <section class="post-content"><p>Sorry, the requested page wasn’t found. <a href="/">Back to homepage</a></p>
+  <section class="post-content"><p>I’m sure it happened to you, more than once: you run a command on a remote host, thinking it will finish in a few seconds. Unfortunately, after 5 minutes looking at your terminal and hoping for the command to be done soon, you realize that it will take hours. Obviously, it’s Friday afternoon and you had planned a trip for the weekend.</p>
+
+<p>There are, I guess, two kind of persons in this situation:</p>
+<ul>
+  <li>the first group will most likely SIGINT the command and postpone it to Monday morning;</li>
+  <li>the second one will try to gracefully handle this situation by letting the command run and enjoying that well-deserved weekend trip.</li>
+</ul>
+
+<p>You better leave here if you feel like you’re a first-group person 😉</p>
+
+<p>In case you’d like to let the command run even after closing the SSH connection, there is a solution, that I experienced myself recently (on a pg_dump, to be precise):</p>
+<ol>
+  <li>Send a <b>SIGTSTP</b> to the command by typing <b>CTRL+Z</b> in the terminal running your command. That will put the command in the background, in a “paused” state.</li>
+  <li>Run the <b>bg</b> command. This will resume your paused command, and most importantly, will run it in the background. We’re getting close!</li>
+  <li>Last, run the <b>disown</b> command. This will remove (or let’s say detach) your command from the shell session.</li>
+</ol>
+
+<p>You can now safely <b>exit</b>, close your laptop and go 🚀!</p>
+
+<p>Here is a 3-lines summary if you should already been gone:</p>
+<pre>
+$ CTRL+Z
+$ bg
+$ disown
+</pre>
+
+<p>Not too hard, right?</p>
+
+<p>And please, next time, do yourself a favor: use <b>nohup</b> or <b>screen</b> before launching any remote command!</p>
 </section>
 </article>
+
+<!-- Post navigation -->
+
+
+<!-- Disqus -->
+
 
     </div>
     
