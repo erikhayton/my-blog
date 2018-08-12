@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+	<meta charset="utf-8">
+	<title>Setup a Heroku-like push to production mechanism | Bastien's blog</title>
+	<meta name="description" content="Heroku is a amazing Platform as a Service that enables you to build and run application in the cloud. It’s often the first choice for deploying an app when y...">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!--Favicon-->
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+	<!-- Canonical -->
+	<link rel="canonical" href="https://blog.bastienlibersa.fr/2018/08/12/heroku-like-push-to-production.html">
+
+	<!-- RSS -->
+	<link rel="alternate" type="application/atom+xml" title="Bastien's blog" href="https://blog.bastienlibersa.fr/feed.xml" />
+
+	<!-- Font Awesome -->
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<!-- Google Fonts -->
+	
+	<link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,700italic,400italic" rel="stylesheet" type="text/css">
+	
+
+	<!-- KaTeX -->
+	
+
+	<!-- Google Analytics -->
+	
+	<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-20546327-7', 'auto');
+	ga('send', 'pageview');
+	</script>
+	
+</head>
+
+  <body>
+    <header class="site-header">
+	<div class="branding">
+		
+		<a href="/">
+			<img class="avatar" src="https://secure.gravatar.com/avatar/38d022408a7f3aa1e90e078a8f809d11?s=100" alt=""/>
+		</a>
+		
+		<h1 class="site-title">
+			<a href="/">Bastien's blog</a>
+		</h1>
+	</div>
+	<nav class="site-nav">
+		<ul>
+			<li>
+				<a class="page-link" href="https://bastienlibersa.fr" target="_blank">
+					Me
+				</a>
+			</li>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<!-- Social icons from Font Awesome, if enabled -->
+			
+
+
+<li>
+	<a href="mailto:bastien.libersa@gmail.com" title="Email">
+		<i class="fa fa-fw fa-envelope"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+	<a href="https://github.com/BastienL" title="Follow on GitHub" target="_blank">
+		<i class="fa fa-fw fa-github"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+<li>
+	<a href="https://fr.linkedin.com/in/bastien-libersa-9b88a225" title="Follow on LinkedIn" target="_blank">
+		<i class="fa fa-fw fa-linkedin"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+
+
+<li>
+	<a href="http://stackoverflow.com/users/877323/bastien-libersa" title="Follow on Stack Exchange" target="_blank">
+		<i class="fa fa-fw fa-stack-exchange"></i>
+	</a>
+</li>
+
+
+
+
+
+
+
+<li>
+	<a href="https://twitter.com/blibersa" title="Follow on Twitter" target="_blank">
+		<i class="fa fa-fw fa-twitter"></i>
+	</a>
+</li>
+
+
+
+
+
+
+		</ul>
+	</nav>
+</header>
+
+    <div class="content">
+      <article >
+  <header style="background-image: url('/')">
+    <h1 class="title">Setup a Heroku-like push to production mechanism</h1>
+    <p class="meta">
+    August 12, 2018
+    
+    </p>
+  </header>
+  <section class="post-content"><p>Heroku is a amazing Platform as a Service that enables you to build and run application in the cloud. It’s often the first choice for deploying an app when you don’t want to focus on something else that the app itself.</p>
+
+<p>One great feature of Heroku is their “push to production” mechanism, which allows you to trigger deployments from your local environment itself. This removes the need from a CI/CD pipeline but keeps the simplicity and security of an automated deployment workflow. Therefore, this is great for small or side-projects.</p>
+
+<p>This feature is easy to setup outside of Heroku, on any server with Git installed. Let’s see how to do so!</p>
+
+<h3>A. On the server side</h3>
+
+<p>1/ Make sure Git is installed on the server. Else install it 😉</p>
+
+<p>2/ Create the bare repository on your server (here’s a <a href="http://www.saintsjd.com/2011/01/what-is-a-bare-git-repository/">great resource</a> to know more about the difference between work respositories and bare repositories):</p>
+<pre>
+$ mkdir -p ~/git/app.git
+$ cd ~/git/app.git
+$ git init --bare
+</pre>
+<p>This is where your code will be pushed to, but that’s not the code your web server will execute. So I recommend to create the repository outside of your web “scope”.</p>
+
+<p>3/ Create the directory that will contain your app’s code (the one executed by your web server):</p>
+<pre>
+$ mkdir -p ~/www/app
+</pre>
+
+<p>4/ Create a <code>post-receive hook</code>. That is where the real magic of all of it lies! This code will be executed every time you push code to that repository. In this post, we simply want to overwrite all the files in the web server with the ones in the repository, so here is how to handle it:</p>
+<pre>
+$ nano ~/git/app.git/hooks/post-receive
+
+#!/bin/bash
+
+export GIT_WORK_TREE=/home/bastien/www/app
+git checkout -f
+
+$ chmod +x ~/git/app.git/hooks/post-receive
+</pre>
+
+<p>Everything’s ready on the server side, let’s wrap everything up on the client side!</p>
+
+<h3>B. On the client side</h3>
+
+<p>1/ Add that new bare repository as a remote to your local repository:</p>
+<pre>
+$ git remote add production
+ssh://bastien@IP/home/bastien/git/app.git
+</pre>
+
+<p>2/ Specify the ref as well (on your first push only):</p>
+<pre>
+$ git push production +master:refs/heads/master
+</pre>
+
+<p>3/ To deploy to production, you now simply need to type:</p>
+<pre>
+$ git push production
+</pre>
+
+<p>And all your latest work will be pushed to production automatically. No need for FTP, SSH or any custom deployment trick!</p>
+
+<h3>C. Conclusion</h3>
+
+<p>You might need to make advanced operations before deploying a new version of your code: generating assets, restarting the web server, etc. But as our post-receive script is a bash script, that shouldn’t be too hard!</p>
+
+<p>Happy deployments 😊</p>
+</section>
+</article>
+
+<!-- Post navigation -->
+
+
+<!-- Disqus -->
+
+
+    </div>
+    
+
+
+<footer class="site-footer">
+	<p class="text">Powered by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> with <a href="https://rohanchandra.github.io/project/type/" target="_blank">Type Theme</a>
+</p>
+</footer>
+
+
+  </body>
+</html>
